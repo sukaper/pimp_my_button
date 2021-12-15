@@ -1,8 +1,10 @@
 library pimp_my_button;
+
 import 'dart:math';
 import 'package:flutter/material.dart';
 
-typedef PimpedWidgetBuilder = Widget Function(BuildContext context, AnimationController controller);
+typedef PimpedWidgetBuilder = Widget Function(
+    BuildContext context, AnimationController controller);
 
 typedef ParticleBuilder = Particle Function(int index);
 
@@ -13,9 +15,12 @@ class PimpedButton extends StatefulWidget {
 
   final Duration duration;
 
+  final AnimationController controller;
+
   const PimpedButton({
     Key key,
     @required this.particle,
+    @required this.controller,
     this.duration = const Duration(milliseconds: 500),
     @required this.pimpedWidgetBuilder,
   }) : super(key: key);
@@ -24,7 +29,8 @@ class PimpedButton extends StatefulWidget {
   PimpedButtonState createState() => new PimpedButtonState();
 }
 
-class PimpedButtonState extends State<PimpedButton> with SingleTickerProviderStateMixin {
+class PimpedButtonState extends State<PimpedButton>
+    with SingleTickerProviderStateMixin {
   AnimationController controller;
 
   Random random;
@@ -35,14 +41,15 @@ class PimpedButtonState extends State<PimpedButton> with SingleTickerProviderSta
     super.initState();
     random = Random();
     seed = random.nextInt(100000000);
-    controller = AnimationController(vsync: this, duration: widget.duration);
+    controller = widget.controller ??
+        AnimationController(vsync: this, duration: widget.duration);
     controller.addStatusListener((status) {
-      if (status == AnimationStatus.forward || status == AnimationStatus.reverse) {
+      if (status == AnimationStatus.forward ||
+          status == AnimationStatus.reverse) {
         seed = random.nextInt(10000000);
       }
     });
   }
-
 
   @override
   void dispose() {
@@ -56,16 +63,16 @@ class PimpedButtonState extends State<PimpedButton> with SingleTickerProviderSta
       animation: controller,
       builder: (context, child) {
         bool shouldPaint = false;
-        if (controller.status == AnimationStatus.forward || controller.status == AnimationStatus.reverse) {
+        if (controller.status == AnimationStatus.forward ||
+            controller.status == AnimationStatus.reverse) {
           shouldPaint = true;
         }
         return CustomPaint(
           painter: PimpPainter(
-            particle: widget.particle,
-            seed: seed,
-            controller: controller,
-            shouldPaint: shouldPaint
-          ),
+              particle: widget.particle,
+              seed: seed,
+              controller: controller,
+              shouldPaint: shouldPaint),
           child: child,
         );
       },
@@ -75,7 +82,8 @@ class PimpedButtonState extends State<PimpedButton> with SingleTickerProviderSta
 }
 
 class PimpPainter extends CustomPainter {
-  PimpPainter({this.particle, this.seed, this.controller, this.shouldPaint}) : super(repaint: controller);
+  PimpPainter({this.particle, this.seed, this.controller, this.shouldPaint})
+      : super(repaint: controller);
 
   final Particle particle;
   final int seed;
@@ -84,7 +92,7 @@ class PimpPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    if(shouldPaint) {
+    if (shouldPaint) {
       canvas.translate(size.width / 2, size.height / 2);
       particle.paint(canvas, size, controller.value, seed);
     }
@@ -98,38 +106,39 @@ abstract class Particle {
   void paint(Canvas canvas, Size size, double progress, int seed);
 }
 
-
 class FourRandomSlotParticle extends Particle {
-
   final List<Particle> children;
 
   final double relativeDistanceToMiddle;
 
   FourRandomSlotParticle({this.children, this.relativeDistanceToMiddle = 2.0});
 
-
   @override
   void paint(Canvas canvas, Size size, double progress, int seed) {
     Random random = Random(seed);
     int side = 0;
-    for(Particle particle in children) {
+    for (Particle particle in children) {
       PositionedParticle(
         position: sideToOffset(side, size, random) * relativeDistanceToMiddle,
         child: particle,
       ).paint(canvas, size, progress, seed);
-      side ++;
+      side++;
     }
   }
 
   Offset sideToOffset(int side, Size size, Random random) {
-    if(side == 0) {
-      return Offset(-random.nextDouble() * (size.width / 2), -random.nextDouble() * (size.height / 2));
-    } else if(side == 1) {
-      return Offset(random.nextDouble() * (size.width / 2), -random.nextDouble() * (size.height / 2));
-    } else if(side == 2) {
-      return Offset(random.nextDouble() * (size.width / 2), random.nextDouble() * (size.height / 2));
-    } else if(side == 3) {
-      return Offset(-random.nextDouble() * (size.width / 2), random.nextDouble() * (size.height / 2));
+    if (side == 0) {
+      return Offset(-random.nextDouble() * (size.width / 2),
+          -random.nextDouble() * (size.height / 2));
+    } else if (side == 1) {
+      return Offset(random.nextDouble() * (size.width / 2),
+          -random.nextDouble() * (size.height / 2));
+    } else if (side == 2) {
+      return Offset(random.nextDouble() * (size.width / 2),
+          random.nextDouble() * (size.height / 2));
+    } else if (side == 3) {
+      return Offset(-random.nextDouble() * (size.width / 2),
+          random.nextDouble() * (size.height / 2));
     } else {
       throw Exception();
     }
@@ -138,8 +147,8 @@ class FourRandomSlotParticle extends Particle {
   double randomOffset(Random random, int range) {
     return range / 2 - random.nextInt(range);
   }
-
 }
+
 class PoppingCircle extends Particle {
   final Color color;
 
@@ -161,20 +170,18 @@ class PoppingCircle extends Particle {
       CircleMirror(
         numberOfParticles: 4,
         child: AnimatedPositionedParticle(
-          begin: Offset(0.0, 5.0),
-          end: Offset(0.0, 15.0),
-          child: FadingRect(
-            color: color,
-            height: 7.0,
-            width: 2.0,
-          )
-        ),
+            begin: Offset(0.0, 5.0),
+            end: Offset(0.0, 15.0),
+            child: FadingRect(
+              color: color,
+              height: 7.0,
+              width: 2.0,
+            )),
         initialRotation: pi / 4,
       ).paint(canvas, size, progress, seed);
     }
   }
 }
-
 
 class Firework extends Particle {
   @override
@@ -206,7 +213,6 @@ class Firework extends Particle {
       ),
     ]).paint(canvas, size, progress, seed);
   }
-
 }
 
 /// Mirrors a given particle around a circle.
@@ -221,9 +227,11 @@ class CircleMirror extends Particle {
 
   final int numberOfParticles;
 
-  CircleMirror.builder({this.particleBuilder, this.initialRotation, this.numberOfParticles});
+  CircleMirror.builder(
+      {this.particleBuilder, this.initialRotation, this.numberOfParticles});
 
-  CircleMirror({Particle child, this.initialRotation, this.numberOfParticles}) : this.particleBuilder = ((index) => child);
+  CircleMirror({Particle child, this.initialRotation, this.numberOfParticles})
+      : this.particleBuilder = ((index) => child);
 
   @override
   void paint(Canvas canvas, Size size, double progress, seed) {
@@ -243,8 +251,6 @@ class CircleMirror extends Particle {
 /// is going to be used on its own, this implies that
 /// all mirrored particles are identical (expect for the rotation around the circle)
 class RectangleMirror extends Particle {
-
-
   final ParticleBuilder particleBuilder;
 
   /// Position of the first particle on the rect
@@ -252,10 +258,12 @@ class RectangleMirror extends Particle {
 
   final int numberOfParticles;
 
+  RectangleMirror.builder(
+      {this.particleBuilder, this.initialDistance, this.numberOfParticles});
 
-  RectangleMirror.builder({this.particleBuilder, this.initialDistance, this.numberOfParticles});
-
-  RectangleMirror({Particle child, this.initialDistance, this.numberOfParticles}) : this.particleBuilder = ((index) => child);
+  RectangleMirror(
+      {Particle child, this.initialDistance, this.numberOfParticles})
+      : this.particleBuilder = ((index) => child);
 
   @override
   void paint(Canvas canvas, Size size, double progress, seed) {
@@ -266,36 +274,40 @@ class RectangleMirror extends Particle {
     bool onHorizontalAxis = true;
     int side = 0;
 
-    assert((distanceBetweenParticles * numberOfParticles).round() == totalLength.round());
+    assert((distanceBetweenParticles * numberOfParticles).round() ==
+        totalLength.round());
 
-    canvas.translate(-size.width /2, -size.height / 2);
+    canvas.translate(-size.width / 2, -size.height / 2);
 
     double currentDistance = initialDistance;
     for (int i = 0; i < numberOfParticles; i++) {
-      while(true) {
-        if(onHorizontalAxis? currentDistance > size.width : currentDistance > size.height) {
-          currentDistance -= onHorizontalAxis? size.width : size.height;
+      while (true) {
+        if (onHorizontalAxis
+            ? currentDistance > size.width
+            : currentDistance > size.height) {
+          currentDistance -= onHorizontalAxis ? size.width : size.height;
           onHorizontalAxis = !onHorizontalAxis;
           side = (++side) % 4;
         } else {
-          if(side == 0) {
+          if (side == 0) {
             assert(onHorizontalAxis);
-            moveTo(canvas, size, 0, currentDistance, 0.0, (){
+            moveTo(canvas, size, 0, currentDistance, 0.0, () {
               particleBuilder(i).paint(canvas, size, progress, seed);
             });
-          } else if(side == 1) {
+          } else if (side == 1) {
             assert(!onHorizontalAxis);
-            moveTo(canvas, size, 1, size.width, currentDistance, (){
+            moveTo(canvas, size, 1, size.width, currentDistance, () {
               particleBuilder(i).paint(canvas, size, progress, seed);
             });
-          } else if(side == 2) {
+          } else if (side == 2) {
             assert(onHorizontalAxis);
-            moveTo(canvas, size, 2, size.width - currentDistance, size.height, (){
+            moveTo(canvas, size, 2, size.width - currentDistance, size.height,
+                () {
               particleBuilder(i).paint(canvas, size, progress, seed);
             });
-          } else if(side == 3) {
+          } else if (side == 3) {
             assert(!onHorizontalAxis);
-            moveTo(canvas, size, 3, 0.0, size.height - currentDistance, (){
+            moveTo(canvas, size, 3, 0.0, size.height - currentDistance, () {
               particleBuilder(i).paint(canvas, size, progress, seed);
             });
           }
@@ -303,14 +315,13 @@ class RectangleMirror extends Particle {
         }
       }
       currentDistance += distanceBetweenParticles;
-
-
     }
 
     canvas.restore();
   }
 
-  void moveTo(Canvas canvas, Size size, int side, double x, double y, VoidCallback painter) {
+  void moveTo(Canvas canvas, Size size, int side, double x, double y,
+      VoidCallback painter) {
     canvas.save();
     canvas.translate(x, y);
     canvas.rotate(-atan2(size.width / 2 - x, size.height / 2 - y));
@@ -335,9 +346,11 @@ class PositionedParticle extends Particle {
     canvas.restore();
   }
 }
+
 /// Animates a childs position based on a Tween<Offset>
 class AnimatedPositionedParticle extends Particle {
-  AnimatedPositionedParticle({Offset begin, Offset end, this.child}) : offsetTween = Tween<Offset>(begin: begin, end: end);
+  AnimatedPositionedParticle({Offset begin, Offset end, this.child})
+      : offsetTween = Tween<Offset>(begin: begin, end: end);
 
   final Particle child;
 
@@ -346,7 +359,8 @@ class AnimatedPositionedParticle extends Particle {
   @override
   void paint(Canvas canvas, Size size, double progress, seed) {
     canvas.save();
-    canvas.translate(offsetTween.lerp(progress).dx, offsetTween.lerp(progress).dy);
+    canvas.translate(
+        offsetTween.lerp(progress).dx, offsetTween.lerp(progress).dy);
     child.paint(canvas, size, progress, seed);
     canvas.restore();
   }
@@ -411,7 +425,8 @@ class AnimatedRotationParticle extends Particle {
 
   final Tween<double> rotation;
 
-  AnimatedRotationParticle({this.child, double begin, double end}) : rotation = Tween<double>(begin: begin, end: end);
+  AnimatedRotationParticle({this.child, double begin, double end})
+      : rotation = Tween<double>(begin: begin, end: end);
 
   @override
   void paint(Canvas canvas, Size size, double progress, int seed) {
@@ -441,9 +456,11 @@ class FadingRect extends Particle {
 
   @override
   void paint(Canvas canvas, Size size, double progress, seed) {
-    canvas.drawRect(Rect.fromLTWH(0.0, 0.0, width, height), Paint()..color = color.withOpacity(1 - progress));
+    canvas.drawRect(Rect.fromLTWH(0.0, 0.0, width, height),
+        Paint()..color = color.withOpacity(1 - progress));
   }
 }
+
 /// A circle which fades out over time
 class FadingCircle extends Particle {
   final Color color;
@@ -453,9 +470,11 @@ class FadingCircle extends Particle {
 
   @override
   void paint(Canvas canvas, Size size, double progress, seed) {
-    canvas.drawCircle(Offset.zero, radius, Paint()..color = color.withOpacity(1 - progress));
+    canvas.drawCircle(
+        Offset.zero, radius, Paint()..color = color.withOpacity(1 - progress));
   }
 }
+
 /// A triangle which also fades out over time
 class FadingTriangle extends Particle {
   /// This controls the shape of the triangle.
@@ -471,7 +490,8 @@ class FadingTriangle extends Particle {
   /// This is the factor of how much bigger then length than the width is
   final double heightToBaseFactor;
 
-  FadingTriangle({this.variation, this.color, this.baseSize, this.heightToBaseFactor});
+  FadingTriangle(
+      {this.variation, this.color, this.baseSize, this.heightToBaseFactor});
 
   @override
   void paint(Canvas canvas, Size size, double progress, int seed) {
@@ -488,7 +508,6 @@ class FadingTriangle extends Particle {
 ///
 /// See for yourself
 class FadingSnake extends Particle {
-
   final double width;
   final double segmentLength;
   final int segments;
@@ -496,14 +515,19 @@ class FadingSnake extends Particle {
 
   final Color color;
 
-  FadingSnake({this.width, this.segmentLength, this.segments, this.curvyness, this.color});
+  FadingSnake(
+      {this.width,
+      this.segmentLength,
+      this.segments,
+      this.curvyness,
+      this.color});
 
   @override
   void paint(Canvas canvas, Size size, double progress, int seed) {
     canvas.save();
     canvas.rotate(pi / 6);
     Path path = Path();
-     /* for(int i = 0; i < segments; i++) {
+    /* for(int i = 0; i < segments; i++) {
         path.lineTo(curvyness * i, segmentLength * (i +1));
         path.lineTo(curvyness * (i + 1), segmentLength * (i + 1));
       }
@@ -511,16 +535,16 @@ class FadingSnake extends Particle {
         path.lineTo(curvyness * (i + 1), segmentLength * i - curvyness);
         path.lineTo(curvyness * i, segmentLength * i - curvyness);
     }*/
-    for(int i = 0; i < segments; i++) {
-      path.quadraticBezierTo(curvyness * i, segmentLength * (i +1), curvyness * (i + 1), segmentLength * (i + 1));
+    for (int i = 0; i < segments; i++) {
+      path.quadraticBezierTo(curvyness * i, segmentLength * (i + 1),
+          curvyness * (i + 1), segmentLength * (i + 1));
     }
-    for(int i = segments - 1; i >= 0; i--) {
-      path.quadraticBezierTo(curvyness * (i + 1), segmentLength * i - curvyness, curvyness * i, segmentLength * i - curvyness);
+    for (int i = segments - 1; i >= 0; i--) {
+      path.quadraticBezierTo(curvyness * (i + 1), segmentLength * i - curvyness,
+          curvyness * i, segmentLength * i - curvyness);
     }
     path.close();
     canvas.drawPath(path, Paint()..color = color);
     canvas.restore();
-
   }
-
 }
