@@ -1,5 +1,4 @@
-
-import 'package:pimp_my_button/pimp_my_button.dart';
+import 'package:particle_my_button/particle_my_button.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(new MyApp());
@@ -40,24 +39,27 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 children: <Widget>[
                   Expanded(
                     child: Center(
-                      child: PimpedButton(
+                      child: ParticleButton(
                         particle: DemoParticle(),
                         pimpedWidgetBuilder: (context, controller) {
-                          return FloatingActionButton(onPressed: () {
-                            controller.forward(from: 0.0);
-                          },);
+                          return FloatingActionButton(
+                            onPressed: () {
+                              controller.forward(from: 0.0);
+                            },
+                          );
                         },
                       ),
                     ),
                   ),
                   Expanded(
                     child: Center(
-                      child: PimpedButton(
+                      child: ParticleButton(
                         particle: RectangleDemoParticle(),
                         pimpedWidgetBuilder: (context, controller) {
-                          return RaisedButton(onPressed: () {
-                            controller.forward(from: 0.0);
-                          },
+                          return RaisedButton(
+                            onPressed: () {
+                              controller.forward(from: 0.0);
+                            },
                             child: Text("Special button"),
                           );
                         },
@@ -66,12 +68,13 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                   ),
                   Expanded(
                     child: Center(
-                      child: PimpedButton(
+                      child: ParticleButton(
                         particle: Rectangle2DemoParticle(),
                         pimpedWidgetBuilder: (context, controller) {
-                          return MaterialButton(onPressed: () {
-                            controller.forward(from: 0.0);
-                          },
+                          return MaterialButton(
+                            onPressed: () {
+                              controller.forward(from: 0.0);
+                            },
                             child: Text("Special button"),
                           );
                         },
@@ -81,7 +84,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 ],
               ),
             ),
-            PimpedButton(
+            ParticleButton(
               particle: ListTileDemoParticle(),
               pimpedWidgetBuilder: (context, controller) {
                 return ListTile(
@@ -95,7 +98,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               },
             ),
             Center(
-              child: PimpedButton(
+              child: ParticleButton(
                 particle: Rectangle2DemoParticle(),
                 pimpedWidgetBuilder: (context, controller) {
                   return IconButton(
@@ -110,12 +113,13 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
             ),
             Expanded(
               child: Center(
-                child: PimpedButton(
+                child: ParticleButton(
                   particle: Rectangle3DemoParticle(),
                   pimpedWidgetBuilder: (context, controller) {
-                    return RaisedButton(onPressed: () {
-                      controller.forward(from: 0.0);
-                    },
+                    return RaisedButton(
+                      onPressed: () {
+                        controller.forward(from: 0.0);
+                      },
                       child: Text("Rectangles"),
                     );
                   },
@@ -128,4 +132,3 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     );
   }
 }
-

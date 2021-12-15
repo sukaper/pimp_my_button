@@ -1,15 +1,15 @@
-library pimp_my_button;
+library particle_my_button;
 
 import 'dart:math';
 import 'package:flutter/material.dart';
 
-typedef PimpedWidgetBuilder = Widget Function(
+typedef ParticleWidgetBuilder = Widget Function(
     BuildContext context, AnimationController controller);
 
 typedef ParticleBuilder = Particle Function(int index);
 
-class PimpedButton extends StatefulWidget {
-  final PimpedWidgetBuilder pimpedWidgetBuilder;
+class ParticleButton extends StatefulWidget {
+  final ParticleWidgetBuilder pimpedWidgetBuilder;
 
   final Particle particle;
 
@@ -17,7 +17,7 @@ class PimpedButton extends StatefulWidget {
 
   final AnimationController controller;
 
-  const PimpedButton({
+  const ParticleButton({
     Key key,
     @required this.particle,
     @required this.controller,
@@ -26,10 +26,10 @@ class PimpedButton extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  PimpedButtonState createState() => new PimpedButtonState();
+  ParticleButtonState createState() => new ParticleButtonState();
 }
 
-class PimpedButtonState extends State<PimpedButton>
+class ParticleButtonState extends State<ParticleButton>
     with SingleTickerProviderStateMixin {
   AnimationController controller;
 

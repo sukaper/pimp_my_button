@@ -214,7 +214,7 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.6.2"
-  pimp_my_button:
+  particle_my_button:
     dependency: "direct main"
     description:
       path: ".."

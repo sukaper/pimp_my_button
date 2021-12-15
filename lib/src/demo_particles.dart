@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:pimp_my_button/src/pimp_my_button.dart';
+import 'package:particle_my_button/src/particle_my_button.dart';
 
 Color intToColor(int col) {
   col = col % 5;
@@ -65,7 +65,8 @@ class RectangleDemoParticle extends Particle {
             return AnimatedPositionedParticle(
               begin: Offset(0.0, -10.0),
               end: Offset(0.0, -60.0),
-              child: FadingRect(width: 5.0, height: 15.0, color: intToColor(int)),
+              child:
+                  FadingRect(width: 5.0, height: 15.0, color: intToColor(int)),
             );
           },
           initialDistance: -pi / randomMirrorOffset),
@@ -105,7 +106,8 @@ class Rectangle2DemoParticle extends Particle {
             return AnimatedPositionedParticle(
               begin: Offset(0.0, -10.0),
               end: Offset(0.0, -60.0),
-              child: FadingRect(width: 5.0, height: 15.0, color: intToColor(int)),
+              child:
+                  FadingRect(width: 5.0, height: 15.0, color: intToColor(int)),
             );
           },
           initialDistance: -pi / randomMirrorOffset),
@@ -175,7 +177,8 @@ class ListTileDemoParticle extends Particle {
             return AnimatedPositionedParticle(
               begin: Offset(0.0, -30.0),
               end: Offset(0.0, -80.0),
-              child: FadingRect(width: 5.0, height: 15.0, color: intToColor(int)),
+              child:
+                  FadingRect(width: 5.0, height: 15.0, color: intToColor(int)),
             );
           },
           initialDistance: 0.0),
@@ -185,7 +188,8 @@ class ListTileDemoParticle extends Particle {
             return AnimatedPositionedParticle(
               begin: Offset(0.0, -25.0),
               end: Offset(0.0, -60.0),
-              child: FadingRect(width: 5.0, height: 15.0, color: intToColor(int)),
+              child:
+                  FadingRect(width: 5.0, height: 15.0, color: intToColor(int)),
             );
           },
           initialDistance: 30.0),
@@ -195,11 +199,11 @@ class ListTileDemoParticle extends Particle {
             return AnimatedPositionedParticle(
               begin: Offset(0.0, -40.0),
               end: Offset(0.0, -100.0),
-              child: FadingRect(width: 5.0, height: 15.0, color: intToColor(int)),
+              child:
+                  FadingRect(width: 5.0, height: 15.0, color: intToColor(int)),
             );
           },
           initialDistance: 80.0),
     ]).paint(canvas, size, progress, seed);
   }
-
 }
